@@ -5,6 +5,7 @@ class RemoteFollowController < ApplicationController
 
   before_action :set_account
   before_action :gone, if: :suspended_account?
+  before_action :check_enabled_registrations, only: [:new, :create]
 
   def new
     @remote_follow = RemoteFollow.new(session_params)
@@ -37,5 +38,9 @@ class RemoteFollowController < ApplicationController
 
   def suspended_account?
     @account.suspended?
+  end
+  
+  def check_enabled_registrations
+    redirect_to root_path if single_user_mode? || !Setting.open_registrations
   end
 end
