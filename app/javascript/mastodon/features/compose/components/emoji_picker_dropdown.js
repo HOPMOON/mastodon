@@ -2,6 +2,7 @@ import React from 'react';
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 import PropTypes from 'prop-types';
 import { defineMessages, injectIntl } from 'react-intl';
+import { EmojiPicker as EmojiPickerAsync } from '../../ui/util/async-components';
 
 const messages = defineMessages({
   emoji: { id: 'emoji_button.label', defaultMessage: 'Insert emoji' },
@@ -24,7 +25,8 @@ const settings = {
 
 let EmojiPicker; // load asynchronously
 
-class EmojiPickerDropdown extends React.PureComponent {
+@injectIntl
+export default class EmojiPickerDropdown extends React.PureComponent {
 
   static propTypes = {
     intl: PropTypes.object.isRequired,
@@ -49,10 +51,10 @@ class EmojiPickerDropdown extends React.PureComponent {
     this.setState({ active: true });
     if (!EmojiPicker) {
       this.setState({ loading: true });
-      import(/* webpackChunkName: "emojione_picker" */ 'emojione-picker').then(TheEmojiPicker => {
+      EmojiPickerAsync().then(TheEmojiPicker => {
         EmojiPicker = TheEmojiPicker.default;
         this.setState({ loading: false });
-      }).catch(err => {
+      }).catch(() => {
         // TODO: show the user an error?
         this.setState({ loading: false });
       });
@@ -107,11 +109,12 @@ class EmojiPickerDropdown extends React.PureComponent {
       <Dropdown ref={this.setRef} className='emoji-picker__dropdown' onShow={this.onShowDropdown} onHide={this.onHideDropdown}>
         <DropdownTrigger className='emoji-button' title={intl.formatMessage(messages.emoji)}>
           <img
-            draggable='false'
             className={`emojione ${active && loading ? 'pulse-loading' : ''}`}
-            alt='🙂' src='/emoji/1f602.svg'
+            alt='🙂'
+            src='/emoji/1f602.svg'
           />
         </DropdownTrigger>
+
         <DropdownContent className='dropdown__left'>
           {
             this.state.active && !this.state.loading &&
@@ -123,5 +126,3 @@ class EmojiPickerDropdown extends React.PureComponent {
   }
 
 }
-
-export default injectIntl(EmojiPickerDropdown);

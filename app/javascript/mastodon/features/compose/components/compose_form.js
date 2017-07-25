@@ -7,27 +7,27 @@ import ReplyIndicatorContainer from '../containers/reply_indicator_container';
 import AutosuggestTextarea from '../../../components/autosuggest_textarea';
 import { debounce } from 'lodash';
 import UploadButtonContainer from '../containers/upload_button_container';
-import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
-import Toggle from 'react-toggle';
+import { defineMessages, injectIntl } from 'react-intl';
 import Collapsable from '../../../components/collapsable';
 import SpoilerButtonContainer from '../containers/spoiler_button_container';
 import PrivacyDropdownContainer from '../containers/privacy_dropdown_container';
 import SensitiveButtonContainer from '../containers/sensitive_button_container';
 import EmojiPickerDropdown from './emoji_picker_dropdown';
 import UploadFormContainer from '../containers/upload_form_container';
-import TextIconButton from './text_icon_button';
 import WarningContainer from '../containers/warning_container';
+import { isMobile } from '../../../is_mobile';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { length } from 'stringz';
 
 const messages = defineMessages({
   placeholder: { id: 'compose_form.placeholder', defaultMessage: 'What is on your mind?' },
-  spoiler_placeholder: { id: 'compose_form.spoiler_placeholder', defaultMessage: 'Content warning' },
+  spoiler_placeholder: { id: 'compose_form.spoiler_placeholder', defaultMessage: 'Write your warning here' },
   publish: { id: 'compose_form.publish', defaultMessage: 'Toot' },
   publishLoud: { id: 'compose_form.publish_loud', defaultMessage: '{publish}!' },
 });
 
-class ComposeForm extends ImmutablePureComponent {
+@injectIntl
+export default class ComposeForm extends ImmutablePureComponent {
 
   static propTypes = {
     intl: PropTypes.object.isRequired,
@@ -68,6 +68,12 @@ class ComposeForm extends ImmutablePureComponent {
   }
 
   handleSubmit = () => {
+    if (this.props.text !== this.autosuggestTextarea.textarea.value) {
+      // Something changed the text inside the textarea (e.g. browser extensions like Grammarly)
+      // Update the state to match the current text
+      this.props.onChange(this.autosuggestTextarea.textarea.value);
+    }
+
     this.props.onSubmit();
   }
 
@@ -131,7 +137,8 @@ class ComposeForm extends ImmutablePureComponent {
 
   handleEmojiPick = (data) => {
     const position     = this.autosuggestTextarea.textarea.selectionStart;
-    this._restoreCaret = position + data.shortname.length + 1;
+    const emojiChar    = data.unicode.split('-').map(code => String.fromCodePoint(parseInt(code, 16))).join('');
+    this._restoreCaret = position + emojiChar.length + 1;
     this.props.onPickEmoji(position, data);
   }
 
@@ -141,7 +148,6 @@ class ComposeForm extends ImmutablePureComponent {
     const text = [this.props.spoiler_text, this.props.text].join('');
 
     let publishText    = '';
-    let reply_to_other = false;
 
     if (this.props.privacy === 'private' || this.props.privacy === 'direct') {
       publishText = <span className='compose-form__publish-private'><i className='fa fa-lock' /> {intl.formatMessage(messages.publish)}</span>;
@@ -174,7 +180,7 @@ class ComposeForm extends ImmutablePureComponent {
             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
             onSuggestionSelected={this.onSuggestionSelected}
             onPaste={onPaste}
-            autoFocus={!showSearch}
+            autoFocus={!showSearch && !isMobile(window.innerWidth)}
           />
 
           <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} />
@@ -202,5 +208,3 @@ class ComposeForm extends ImmutablePureComponent {
   }
 
 }
-
-export default injectIntl(ComposeForm);

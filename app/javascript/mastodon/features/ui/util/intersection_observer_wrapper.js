@@ -46,7 +46,9 @@ class IntersectionObserverWrapper {
 
   disconnect () {
     if (this.observer) {
+      this.callbacks = {};
       this.observer.disconnect();
+      this.observer = null;
     }
   }
 

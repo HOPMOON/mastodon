@@ -1,4 +1,6 @@
 import React from 'react';
+import classNames from 'classnames';
+import Redirect from 'react-router-dom/Redirect';
 import NotificationsContainer from './containers/notifications_container';
 import PropTypes from 'prop-types';
 import LoadingBarContainer from './containers/loading_bar_container';
@@ -10,14 +12,48 @@ import { debounce } from 'lodash';
 import { uploadCompose } from '../../actions/compose';
 import { refreshHomeTimeline } from '../../actions/timelines';
 import { refreshNotifications } from '../../actions/notifications';
+import { WrappedSwitch, WrappedRoute } from './util/react_router_helpers';
 import UploadArea from './components/upload_area';
 import ColumnsAreaContainer from './containers/columns_area_container';
+import {
+  Compose,
+  Status,
+  GettingStarted,
+  PublicTimeline,
+  CommunityTimeline,
+  AccountTimeline,
+  AccountGallery,
+  HomeTimeline,
+  Followers,
+  Following,
+  Reblogs,
+  Favourites,
+  HashtagTimeline,
+  Notifications,
+  FollowRequests,
+  GenericNotFound,
+  FavouritedStatuses,
+  Blocks,
+  Mutes,
+} from './util/async-components';
 
-class UI extends React.PureComponent {
+// Dummy import, to make sure that <Status /> ends up in the application bundle.
+// Without this it ends up in ~8 very commonly used bundles.
+import '../../components/status';
+
+const mapStateToProps = state => ({
+  systemFontUi: state.getIn(['meta', 'system_font_ui']),
+  isComposing: state.getIn(['compose', 'is_composing']),
+});
+
+@connect(mapStateToProps)
+export default class UI extends React.PureComponent {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.node,
+    systemFontUi: PropTypes.bool,
+    isComposing: PropTypes.bool,
   };
 
   state = {
@@ -99,6 +135,19 @@ class UI extends React.PureComponent {
     this.props.dispatch(refreshNotifications());
   }
 
+  shouldComponentUpdate (nextProps) {
+    if (nextProps.isComposing !== this.props.isComposing) {
+      // Avoid expensive update just to toggle a class
+      this.node.classList.toggle('is-composing', nextProps.isComposing);
+
+      return false;
+    }
+
+    // Why isn't this working?!?
+    // return super.shouldComponentUpdate(nextProps, nextState);
+    return true;
+  }
+
   componentWillUnmount () {
     window.removeEventListener('resize', this.handleResize);
     document.removeEventListener('dragenter', this.handleDragEnter);
@@ -116,10 +165,42 @@ class UI extends React.PureComponent {
     const { width, draggingOver } = this.state;
     const { children } = this.props;
 
+    const className = classNames('ui', {
+      'system-font': this.props.systemFontUi,
+    });
+
     return (
-      <div className='ui' ref={this.setRef}>
+      <div className={className} ref={this.setRef}>
         <TabsBar />
-        <ColumnsAreaContainer singleColumn={isMobile(width)}>{children}</ColumnsAreaContainer>
+        <ColumnsAreaContainer singleColumn={isMobile(width)}>
+          <WrappedSwitch>
+            <Redirect from='/' to='/getting-started' exact />
+            <WrappedRoute path='/getting-started' component={GettingStarted} content={children} />
+            <WrappedRoute path='/timelines/home' component={HomeTimeline} content={children} />
+            <WrappedRoute path='/timelines/public' exact component={PublicTimeline} content={children} />
+            <WrappedRoute path='/timelines/public/local' component={CommunityTimeline} content={children} />
+            <WrappedRoute path='/timelines/tag/:id' component={HashtagTimeline} content={children} />
+
+            <WrappedRoute path='/notifications' component={Notifications} content={children} />
+            <WrappedRoute path='/favourites' component={FavouritedStatuses} content={children} />
+
+            <WrappedRoute path='/statuses/new' component={Compose} content={children} />
+            <WrappedRoute path='/statuses/:statusId' exact component={Status} content={children} />
+            <WrappedRoute path='/statuses/:statusId/reblogs' component={Reblogs} content={children} />
+            <WrappedRoute path='/statuses/:statusId/favourites' component={Favourites} content={children} />
+
+            <WrappedRoute path='/accounts/:accountId' exact component={AccountTimeline} content={children} />
+            <WrappedRoute path='/accounts/:accountId/followers' component={Followers} content={children} />
+            <WrappedRoute path='/accounts/:accountId/following' component={Following} content={children} />
+            <WrappedRoute path='/accounts/:accountId/media' component={AccountGallery} content={children} />
+
+            <WrappedRoute path='/follow_requests' component={FollowRequests} content={children} />
+            <WrappedRoute path='/blocks' component={Blocks} content={children} />
+            <WrappedRoute path='/mutes' component={Mutes} content={children} />
+
+            <WrappedRoute component={GenericNotFound} content={children} />
+          </WrappedSwitch>
+        </ColumnsAreaContainer>
         <NotificationsContainer />
         <LoadingBarContainer className='loading-bar' />
         <ModalContainer />
@@ -129,5 +210,3 @@ class UI extends React.PureComponent {
   }
 
 }
-
-export default connect()(UI);

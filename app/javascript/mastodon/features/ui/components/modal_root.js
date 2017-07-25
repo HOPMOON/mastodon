@@ -1,12 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MediaModal from './media_modal';
-import OnboardingModal from './onboarding_modal';
-import VideoModal from './video_modal';
-import BoostModal from './boost_modal';
-import ConfirmationModal from './confirmation_modal';
 import TransitionMotion from 'react-motion/lib/TransitionMotion';
 import spring from 'react-motion/lib/spring';
+import BundleContainer from '../containers/bundle_container';
+import BundleModalError from './bundle_modal_error';
+import ModalLoading from './modal_loading';
+import {
+  MediaModal,
+  OnboardingModal,
+  VideoModal,
+  BoostModal,
+  ConfirmationModal,
+  ReportModal,
+} from '../../../features/ui/util/async-components';
 
 const MODAL_COMPONENTS = {
   'MEDIA': MediaModal,
@@ -14,9 +20,10 @@ const MODAL_COMPONENTS = {
   'VIDEO': VideoModal,
   'BOOST': BoostModal,
   'CONFIRM': ConfirmationModal,
+  'REPORT': ReportModal,
 };
 
-class ModalRoot extends React.PureComponent {
+export default class ModalRoot extends React.PureComponent {
 
   static propTypes = {
     type: PropTypes.string,
@@ -47,6 +54,16 @@ class ModalRoot extends React.PureComponent {
     return { opacity: spring(0), scale: spring(0.98) };
   }
 
+  renderLoading = () => {
+    return <ModalLoading />;
+  }
+
+  renderError = (props) => {
+    const { onClose } = this.props;
+
+    return <BundleModalError {...props} onClose={onClose} />;
+  }
+
   render () {
     const { type, props, onClose } = this.props;
     const visible = !!type;
@@ -68,18 +85,16 @@ class ModalRoot extends React.PureComponent {
       >
         {interpolatedStyles =>
           <div className='modal-root'>
-            {interpolatedStyles.map(({ key, data: { type, props }, style }) => {
-              const SpecificComponent = MODAL_COMPONENTS[type];
-
-              return (
-                <div key={key} style={{ pointerEvents: visible ? 'auto' : 'none' }}>
-                  <div role='presentation' className='modal-root__overlay' style={{ opacity: style.opacity }} onClick={onClose} />
-                  <div className='modal-root__container' style={{ opacity: style.opacity, transform: `translateZ(0px) scale(${style.scale})` }}>
-                    <SpecificComponent {...props} onClose={onClose} />
-                  </div>
+            {interpolatedStyles.map(({ key, data: { type, props }, style }) => (
+              <div key={key} style={{ pointerEvents: visible ? 'auto' : 'none' }}>
+                <div role='presentation' className='modal-root__overlay' style={{ opacity: style.opacity }} onClick={onClose} />
+                <div className='modal-root__container' style={{ opacity: style.opacity, transform: `translateZ(0px) scale(${style.scale})` }}>
+                  <BundleContainer fetchComponent={MODAL_COMPONENTS[type]} loading={this.renderLoading} error={this.renderError} renderDelay={200}>
+                    {(SpecificComponent) => <SpecificComponent {...props} onClose={onClose} />}
+                  </BundleContainer>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         }
       </TransitionMotion>
@@ -87,5 +102,3 @@ class ModalRoot extends React.PureComponent {
   }
 
 }
-
-export default ModalRoot;
