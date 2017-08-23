@@ -147,7 +147,7 @@ pt-BR:
       confirmed: Confirmado
       expires_in: Expira em
       last_delivery: Última entrega
-      title: PubSubHubbub
+      title: WebSub
       topic: Tópico
     title: Administração
   application_mailer:
@@ -169,7 +169,6 @@ pt-BR:
   authorize_follow:
     error: Infelizmente houve um erro olhando uma conta remota
     follow: Seguir
-    prompt_html: 'Você (<strong>%{self}</strong>) pediu pra seguir:'
     title: Seguir %{acct}
   datetime:
     distance_in_words:

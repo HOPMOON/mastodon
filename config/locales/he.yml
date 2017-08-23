@@ -155,7 +155,7 @@ he:
       confirmed: מאושר
       expires_in: פג תוקף ב-
       last_delivery: משלוח אחרון
-      title: PubSubHubbub
+      title: WebSub
       topic: נושא
     title: ניהול
   application_mailer:
@@ -177,7 +177,6 @@ he:
   authorize_follow:
     error: למרבה הצער, היתה שגיאה בחיפוש החשבון המרוחק
     follow: לעקוב
-    prompt_html: 'בקשת מעקב ממך (<strong>%{self}</strong>) אחרי:'
     title: לעקוב אחרי %{acct}
   datetime:
     distance_in_words:

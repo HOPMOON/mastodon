@@ -147,7 +147,7 @@ tr:
       confirmed: Onaylandı
       expires_in: Bitiş Tarihi
       last_delivery: Son gönderim
-      title: PubSubHubbub
+      title: WebSub
       topic: Konu
     title: Yönetim
   application_mailer:
@@ -169,7 +169,6 @@ tr:
   authorize_follow:
     error: Uzak hesap aranırken bir hata oluştu.
     follow: Takip et
-    prompt_html: 'Siz (<strong>%{self}</strong>) bu kullanıcıyı takip etmek istiyor musunuz?:'
     title: "%{acct}'i takip et"
   datetime:
     distance_in_words:

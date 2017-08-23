@@ -154,7 +154,7 @@ zh-CN:
       confirmed: 确定
       expires_in: 期限
       last_delivery: 数据最后送抵时间
-      title: PubSubHubbub 订阅
+      title: WebSub 订阅
       topic: 所订阅资源
     title: 管理
   application_mailer:
@@ -176,7 +176,6 @@ zh-CN:
   authorize_follow:
     error: 对不起，寻找这个跨站用户时出错
     follow: 关注
-    prompt_html: 你 (<strong>%{self}</strong>) 正准备关注︰
     title: 关注 %{acct}
   datetime:
     distance_in_words:

@@ -2,12 +2,17 @@
 ja:
   about:
     about_mastodon_html: Mastodon は、オープンなウェブプロトコルを採用した、自由でオープンソースなソーシャルネットワークです。電子メールのような分散型の仕組みを採っています。
-    about_this: このインスタンスについて
+    about_this: 詳細情報
     closed_registrations: 現在このインスタンスでの新規登録は受け付けていません。しかし、他のインスタンスにアカウントを作成しても全く同じネットワークに参加することができます。
     contact: 連絡先
+    contact_missing: 未設定
+    contact_unavailable: N/A
     description_headline: "%{domain} とは？"
     domain_count_after: 個のインスタンス
     domain_count_before: 接続中
+    extended_description_html: |
+      <h3>ルールを書くのに適した場所</h3>
+      <p>詳細説明が設定されていません。</p>
     features:
       humane_approach_body: 他の SNS の失敗から学び、Mastodon はソーシャルメディアが誤った使い方をされることの無いように倫理的な設計を目指しています。
       humane_approach_title: より思いやりのある設計
@@ -32,12 +37,16 @@ ja:
     follow: フォロー
     followers: フォロワー
     following: フォロー中
+    media: メディア
     nothing_here: 何もありません
     people_followed_by: "%{name} さんがフォロー中のアカウント"
     people_who_follow: "%{name} さんをフォロー中のアカウント"
-    posts: 投稿
+    posts: トゥート
+    posts_with_replies: トゥートと返信
     remote_follow: リモートフォロー
     reserved_username: このユーザー名は予約されています。
+    roles:
+      admin: Admin
     unfollow: フォロー解除
   admin:
     accounts:
@@ -104,12 +113,14 @@ ja:
         hint: ドメインブロックはデータベース中のアカウント項目の作成を妨げませんが、遡って自動的に指定されたモデレーションをそれらのアカウントに適用します。
         severity:
           desc_html: "<strong>サイレンス</strong>はアカウントのトゥートをフォローしていない人から隠します。<strong>停止</strong>はそのアカウントのコンテンツ、メディア、プロフィールデータをすべて削除します。"
+          noop: なし
           silence: サイレンス
           suspend: 停止
         title: 新規ドメインブロック
       reject_media: メディアファイルを拒否
       reject_media_hint: ローカルに保存されたメディアファイルを削除し、今後のダウンロードを拒否します。停止とは無関係です。
       severities:
+        noop: なし
         silence: サイレンス
         suspend: 停止
       severity: 深刻度
@@ -200,7 +211,7 @@ ja:
       confirmed: 確認済み
       expires_in: 期限
       last_delivery: 最終配送
-      title: PubSubHubbub
+      title: WebSub
       topic: トピック
     title: 管理
   admin_mailer:
@@ -227,7 +238,7 @@ ja:
     reset_password: パスワードを再発行
     set_new_password: 新しいパスワード
   authorize_follow:
-    error: 残念ながら、リモートアカウントにエラーが発生しました。
+    error: 残念ながら、リモートアカウント情報の取得中にエラーが発生しました。
     follow: フォロー
     follow_request: 'あなたは以下のアカウントにフォローリクエストを送信しました:'
     following: '成功! あなたは現在以下のアカウントをフォローしています:'
@@ -235,7 +246,6 @@ ja:
       close: またはこのウィンドウを閉じます
       return: ユーザーのプロフィールに戻る
       web: Web を開く
-    prompt_html: 'あなた（<strong>%{self}</strong>）は以下のアカウントのフォローをリクエストしました:'
     title: "%{acct} をフォロー"
   datetime:
     distance_in_words:
@@ -341,6 +351,8 @@ ja:
       title: あなたのトゥートが %{name} さんにお気に入り登録されました
     follow:
       title: "%{name} さんにフォローされました"
+    group:
+      title: "%{count} 件の通知"
     mention:
       action_boost: ブースト
       action_expand: もっと見る
@@ -392,10 +404,12 @@ ja:
       windows: Windows
       windows_mobile: Windows Mobile
       windows_phone: Windows Phone
+    revoke: 削除
+    revoke_success: セッションを削除しました
     title: セッション
   settings:
     authorized_apps: 認証済みアプリ
-    back: 戻る
+    back: Mastodon に戻る
     delete: アカウントの削除
     edit_profile: プロフィールを編集
     export: データのエクスポート
@@ -511,3 +525,4 @@ ja:
   users:
     invalid_email: メールアドレスが無効です
     invalid_otp_token: 二段階認証コードが間違っています
+    signed_in_as: '下記でログイン中:'

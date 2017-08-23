@@ -148,7 +148,7 @@ th:
       confirmed: ยืนยัน
       expires_in: หมดอายุภายใน
       last_delivery: จัดส่งครั้งล่าสุด
-      title: PubSubHubbub
+      title: WebSub
       topic: ชื่อเรื่อง
     title: แอดมิน
   application_mailer:
@@ -170,7 +170,6 @@ th:
   authorize_follow:
     error: Unfortunately, there was an error looking up the remote account
     follow: ติดตาม
-    prompt_html: 'คุณ (<strong>%{self}</strong>) ขอติดตาม:'
     title: ติดตาม %{acct}
   datetime:
     distance_in_words:

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170718211102) do
+ActiveRecord::Schema.define(version: 20170720000000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20170718211102) do
     t.integer "status_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id", "id"], name: "index_favourites_on_account_id_and_id"
     t.index ["account_id", "status_id"], name: "index_favourites_on_account_id_and_status_id", unique: true
     t.index ["status_id"], name: "index_favourites_on_status_id"
   end
@@ -217,6 +218,9 @@ ActiveRecord::Schema.define(version: 20170718211102) do
     t.datetime "updated_at"
     t.boolean "superapp", default: false, null: false
     t.string "website"
+    t.integer "owner_id"
+    t.string "owner_type"
+    t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
@@ -419,6 +423,7 @@ ActiveRecord::Schema.define(version: 20170718211102) do
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id", on_delete: :cascade
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id", on_delete: :cascade
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id", on_delete: :cascade
+  add_foreign_key "oauth_applications", "users", column: "owner_id", on_delete: :cascade
   add_foreign_key "preview_cards", "statuses", on_delete: :cascade
   add_foreign_key "reports", "accounts", column: "action_taken_by_account_id", on_delete: :nullify
   add_foreign_key "reports", "accounts", column: "target_account_id", on_delete: :cascade
